@@ -12,12 +12,17 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Stripe.net" Version="45.13.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MoviesManagementSystem.Core\MoviesManagementSystem.Core.csproj" />
     <ProjectReference Include="..\MoviesManagementSystemEF\MoviesManagementSystem.EF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Movie\Viedo\" />
   </ItemGroup>
 
 </Project>

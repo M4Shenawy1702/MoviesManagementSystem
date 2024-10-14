@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using MoviesManagementSystem.Core.Dots;
 using MoviesManagementSystem.Core.Interfaces;
 using MoviesManagementSystem.EF.Context;
@@ -14,16 +12,16 @@ namespace MoviesManagementSystem.Api.Controllers
     
     public class AuthController : ControllerBase
     {
-        private readonly IAuthRepository _authService;
+        private readonly IAuthRepository _authRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private List<string> _AllowedExtensions = new List<string> { ".jpg", ".png" };
         private long _MaxAllowedSize = 10485760;
 
 
-        public AuthController(IAuthRepository authService, UserManager<ApplicationUser> userManager, ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+        public AuthController(IAuthRepository authRepository, UserManager<ApplicationUser> userManager, ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
-            _authService = authService;
+            _authRepository = authRepository;
             _userManager = userManager;
             _webHostEnvironment = webHostEnvironment;
         }
@@ -34,7 +32,7 @@ namespace MoviesManagementSystem.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _authService.RegisterAsync(Dto,"NormalUser");
+            var result = await _authRepository.RegisterAsync(Dto, "NormalUser");
 
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
@@ -45,7 +43,7 @@ namespace MoviesManagementSystem.Api.Controllers
         [HttpPost("LogIn")]
         public async Task<IActionResult> LogIn([FromBody] TokenRequestDto Dto)
         {
-            var result = await _authService.GetTokenAsync(Dto);
+            var result = await _authRepository.GetTokenAsync(Dto);
 
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
@@ -69,7 +67,7 @@ namespace MoviesManagementSystem.Api.Controllers
                 user.Email = Dto.Email;
                 user.Age = Dto.Age;
                 user.BirtheDate = Dto.BirtheDate;
-                user.UserName = Dto.Username;
+                user.UserName = Dto.UserName;
                 user.PhoneNumber = Dto.PhoneNumber;
 
 

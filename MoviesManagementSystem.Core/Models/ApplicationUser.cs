@@ -12,7 +12,6 @@ namespace MoviesManagementSystem.EF.Models
         public DateTime BirtheDate { get; set; }
         public Gender Gender { get; set; }
         public int Age { get; set; }
-        public string UserName { get; set; }
         public NormalUser NormalUser { get; set; }
         public SuperAdmin SuperAdmin { get; set; }
         public Admin Admin { get; set; }

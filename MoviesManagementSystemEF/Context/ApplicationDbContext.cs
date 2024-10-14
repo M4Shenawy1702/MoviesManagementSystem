@@ -17,5 +17,7 @@ namespace MoviesManagementSystem.EF.Context
         public DbSet<Admin> Admins { get; set; }
         public DbSet<NormalUser> NormalUsers { get; set; }
         public DbSet<SuperAdmin> SuperAdmins { get; set; }
+        public DbSet<MovieReview> MovieReviews { get; set; }
+        public DbSet<Payment> Payments { get; set; }
     }
 }

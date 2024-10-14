@@ -5,6 +5,8 @@ namespace MoviesManagementSystem.Core.Interfaces
     {
         Task<AuthModel> RegisterAsync(RegisterDto Dto,string Role);
         Task<AuthModel> GetTokenAsync(TokenRequestDto model);
+        Task<AuthModel> DeleteAsync(string UserId, string Role);
         Task<string> AddRoleAsync(AddRoleModel model);
+
     }
 }

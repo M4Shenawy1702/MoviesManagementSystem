@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BLL.VotingSystem.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,14 +10,14 @@ using MoviesManagementSystem.EF.Models;
 
 namespace MoviesManagementSystem.Api.Controllers
 {
-    [Authorize(Roles = "Admin")]
-    [Authorize(Roles = "SuperAdmin")]
+    //[Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "SuperAdmin")]
     [ApiController]
     [Route("[controller]")]
     
     public class AdminController : ControllerBase
     {
-        private readonly IAuthRepository _authService;
+        private readonly IAuthRepository _authRepository;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -24,9 +25,9 @@ namespace MoviesManagementSystem.Api.Controllers
         private long _MaxAllowedSize = 10485760;
 
 
-        public AdminController(IAuthRepository authService, UserManager<ApplicationUser> userManager, ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+        public AdminController(IAuthRepository authRepository, UserManager<ApplicationUser> userManager, ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
-            _authService = authService;
+            _authRepository = authRepository;
             _userManager = userManager;
             _webHostEnvironment = webHostEnvironment;
             _context = context;
@@ -38,7 +39,7 @@ namespace MoviesManagementSystem.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _authService.RegisterAsync(Dto,"Admin");
+            var result = await _authRepository.RegisterAsync(Dto,"Admin");
 
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
@@ -46,35 +47,36 @@ namespace MoviesManagementSystem.Api.Controllers
             return Ok(result);
         }
         [Authorize(Roles = "SuperAdmin")]
-        [HttpPost("AddSuperAdmin")]
-        public async Task<IActionResult> AddSuperAdmin([FromForm] RegisterDto Dto)
+
+
+        //[HttpDelete("DeleteUser/{UserId}")]
+        //public async Task<IActionResult> DeleteUser(string UserId)
+        //{
+        //    var user = await _userManager.FindByIdAsync(UserId);
+        //    if (user == null)
+        //        return NotFound();
+
+        //    var result = await _userManager.DeleteAsync(user);
+
+        //    if (!result.Succeeded)
+        //    {
+        //        return BadRequest("Failed to delete the user");
+        //    }
+
+        //    return Ok("User deleted successfully");
+        //}
+        [HttpDelete("DeleteNormalUser/{UserId}")]
+        public async Task<IActionResult> DeleteNormalUser(string UserId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _authService.RegisterAsync(Dto, "SuperAdmin");
+            var result = await _authRepository.DeleteAsync(UserId, "NormalUser");
 
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
 
             return Ok(result);
-        }
-
-        [HttpDelete("DeleteUser/{UserId}")]
-        public async Task<IActionResult> DeleteUser(string UserId)
-        {
-            var user = await _userManager.FindByIdAsync(UserId);
-            if (user == null)
-                return NotFound();
-
-            var result = await _userManager.DeleteAsync(user);
-
-            if (!result.Succeeded)
-            {
-                return BadRequest("Failed to delete the user");
-            }
-
-            return Ok("User deleted successfully");
         }
 
         [HttpPost("addRole")]
@@ -83,7 +85,7 @@ namespace MoviesManagementSystem.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _authService.AddRoleAsync(model);
+            var result = await _authRepository.AddRoleAsync(model);
 
             if (!string.IsNullOrEmpty(result))
                 return BadRequest(result);
