@@ -2,7 +2,7 @@
 using MoviesManagementSystem.Core.Dots.RateDtos;
 using MoviesManagementSystem.Core.IServices;
 
-namespace MoviesManagementSystem.Api.Controllers
+namespace MoviesManagementSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

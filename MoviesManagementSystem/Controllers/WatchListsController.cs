@@ -2,7 +2,7 @@
 using MoviesManagementSystem.Core.Dots.WatchListDtos;
 using MoviesManagementSystem.Core.Interfaces.Services;
 
-namespace MoviesManagementSystem.Api.Controllers
+namespace MoviesManagementSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

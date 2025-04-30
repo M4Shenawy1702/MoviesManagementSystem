@@ -9,6 +9,7 @@ namespace MoviesManagementSystem.Api.Controllers
 {
     [ApiController]
     [Route("api/admin/users")]
+    [Authorize(Roles = "Admin")]
     public class AdminController : ControllerBase
     {
         private readonly IAuthService _authService;

@@ -5,7 +5,7 @@ using MoviesManagementSystem.Core.Dots.UserDtos;
 using MoviesManagementSystem.Core.Interfaces.Services;
 using System.Threading.Tasks;
 
-namespace MoviesManagementSystem.Api.Controllers
+namespace MoviesManagementSystem.Controllers
 {
     [Route("api/users/{userId}")]
     [ApiController]

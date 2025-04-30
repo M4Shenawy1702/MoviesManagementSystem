@@ -16,7 +16,7 @@ using OrderManagementSystem.EF.Services;
 using Stripe;
 using System.Text;
 
-namespace MoviesManagementSystem.Api
+namespace MoviesManagementSystem
 {
     public class Program
     {
@@ -30,9 +30,17 @@ namespace MoviesManagementSystem.Api
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            builder.Services.AddIdentityCore<ApplicationUser>(config =>
+            {
+                config.User.RequireUniqueEmail = true;
+
+                config.Password.RequiredLength = 8;
+                config.Password.RequireNonAlphanumeric = false;
+                config.Password.RequireUppercase = false;
+                config.Password.RequireLowercase = false;
+                config.Password.RequireDigit = false;
+
+            }).AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddControllers();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -79,21 +87,29 @@ namespace MoviesManagementSystem.Api
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IReviewService, Core.Services.ReviewService>();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
+            var jwt = configuration.GetSection("JWT").Get<JWT>();
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(o =>
+            {
+                o.RequireHttpsMetadata = false;
+                o.SaveToken = false;
+                o.TokenValidationParameters = new TokenValidationParameters
                 {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = configuration["JwtSettings:Issuer"],
-                        ValidAudience = configuration["JwtSettings:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"])),
-                        RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-                    };
-                });
+                    ValidateIssuer = true,
+                    ValidIssuer = jwt!.Issuer,
+
+                    ValidateAudience = true,
+                    ValidAudience = jwt.Audience,
+
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key)),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
 
         }
 

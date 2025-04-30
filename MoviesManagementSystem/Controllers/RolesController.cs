@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MoviesManagementSystem.Core.Dots.AuthDots;
 using MoviesManagementSystem.Core.IServices;
 
-namespace MoviesManagementSystem.Api.Controllers
+namespace MoviesManagementSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
