@@ -8,8 +8,8 @@ namespace MoviesManagementSystem.Core.Services
     {
         private readonly string _smtpServer = "smtp.gmail.com";
         private readonly int _port = 587;
-        private readonly string _username = "m4.el.shenawy1702@gmail.com";
-        private readonly string _password = "cbulkfdgcrhyzncc";
+        private readonly string _username = "";
+        private readonly string _password = "";
 
         public async Task SendEmailAsync(string toEmail, string subject, string body)
         {
